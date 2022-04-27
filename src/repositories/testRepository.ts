@@ -18,6 +18,9 @@ async function getTestsByDiscipline() {
         },
       },
     },
+    orderBy: {
+      id: "asc",
+    },
   });
 }
 
@@ -30,6 +33,11 @@ async function getTestsByTeachers() {
         include: {
           category: true,
         },
+      },
+    },
+    orderBy: {
+      teacher: {
+        name: "asc",
       },
     },
   });
