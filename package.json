@@ -7,7 +7,7 @@
   "scripts": {
     "bluid": "tsc",
     "start": "node src/server.js",
-    "dev": "npx nodemon src/app.ts",
+    "dev": "npx nodemon src/server.ts",
     "test": "dotenv -e .env.test prisma db seed && NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -i"
   },
   "prisma": {

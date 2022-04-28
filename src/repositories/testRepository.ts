@@ -43,7 +43,21 @@ async function getTestsByTeachers() {
   });
 }
 
+async function incrementViews(testId: number) {
+  await prisma.test.update({
+    data: {
+      views: {
+        increment: 1,
+      },
+    },
+    where: {
+      id: testId,
+    },
+  });
+}
+
 export default {
   getTestsByDiscipline,
   getTestsByTeachers,
+  incrementViews,
 };

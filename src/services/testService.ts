@@ -12,6 +12,11 @@ async function find(filter: Filter) {
   }
 }
 
+async function updateViews(testId: number) {
+  await testRepository.incrementViews(testId);
+}
+
 export default {
   find,
+  updateViews,
 };
