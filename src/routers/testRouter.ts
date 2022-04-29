@@ -10,5 +10,7 @@ testRouter.put(
   ensureAuthenticatedMiddleware,
   testController.updateViews
 );
+// testRouter.get("/tests/searchBy/:disciplineName")
+// testRouter.get("/tests/searchBy/:teacherName")
 
 export default testRouter;

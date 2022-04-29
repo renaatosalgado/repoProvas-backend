@@ -4,11 +4,11 @@ interface Filter {
   groupBy: "disciplines" | "teachers";
 }
 
-async function find(filter: Filter) {
+async function find(filter: Filter, teacherName: string, disciplineName: string) {
   if (filter.groupBy === "disciplines") {
-    return testRepository.getTestsByDiscipline();
+    return testRepository.getTestsByDiscipline(disciplineName);
   } else if (filter.groupBy === "teachers") {
-    return testRepository.getTestsByTeachers();
+    return testRepository.getTestsByTeachers(teacherName);
   }
 }
 

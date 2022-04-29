@@ -1,9 +1,15 @@
 import { prisma } from "../database.js";
 
-async function getTestsByDiscipline() {
+async function getTestsByDiscipline(disciplineName: string) {
   return prisma.term.findMany({
     include: {
       disciplines: {
+        where: {
+          name: {
+            startsWith: disciplineName,
+            mode: "insensitive",
+          },
+        },
         include: {
           teacherDisciplines: {
             include: {
@@ -24,7 +30,7 @@ async function getTestsByDiscipline() {
   });
 }
 
-async function getTestsByTeachers() {
+async function getTestsByTeachers(teacherName: string) {
   return prisma.teacherDiscipline.findMany({
     include: {
       teacher: true,
@@ -32,6 +38,14 @@ async function getTestsByTeachers() {
       tests: {
         include: {
           category: true,
+        },
+      },
+    },
+    where: {
+      teacher: {
+        name: {
+          startsWith: teacherName,
+          mode: "insensitive",
         },
       },
     },

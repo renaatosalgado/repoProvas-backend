@@ -22,8 +22,13 @@ async function insert(createUserData: CreateUserData) {
   });
 }
 
+async function truncateTable() {
+  await prisma.$executeRaw`TRUNCATE TABLE users`;
+}
+
 export default {
   findByEmail,
   findById,
   insert,
+  truncateTable,
 };
