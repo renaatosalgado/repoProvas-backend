@@ -8,8 +8,10 @@
     "bluid": "tsc",
     "start": "node src/server.js",
     "dev": "npx nodemon src/server.ts",
-    "dev-test": "npx dotenv -e .env.test nodemon src/server.ts",
-    "test": "dotenv -e .env.test prisma db seed && NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -i"
+    "dev-test": "dotenv -e .env.test npx nodemon src/server.ts",
+    "test": "dotenv -e .env.test prisma db seed && NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -i",
+    "prisma": "npx prisma studio",
+    "prisma-test": "dotenv -e .env.test npx prisma studio"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

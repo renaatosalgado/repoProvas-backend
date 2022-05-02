@@ -53,7 +53,7 @@ describe("Users tests - POST /sign-up", () => {
   });
 });
 
-describe("Users tests - POST /sign-up", () => {
+describe("Users tests - POST /sign-in", () => {
   beforeEach(eraseUserTable());
 
   afterAll(prismaDiconnect());
@@ -102,6 +102,69 @@ describe("Users tests - POST /sign-up", () => {
   });
 });
 
+describe("Update tests views - PUT /tests/:testId/update-views", () => {
+  beforeEach(eraseUserTable());
+  afterAll(() => {
+    prismaDiconnect();
+  });
+
+  it("should return 201, given a valid testId", async () => {
+    const testId = 1;
+
+    const login = await getToken();
+
+    const response = await supertest(app)
+      .put(`/tests/${testId}/update-views`)
+      .set("Authorization", `Bearer ${login.body.token}`);
+
+    expect(response.status).toEqual(201);
+  });
+
+  it("should return 404, given an invalid testId", async () => {
+    const testId = 200;
+
+    const login = await getToken();
+
+    const response = await supertest(app)
+      .put(`/tests/${testId}/update-views`)
+      .set("Authorization", `Bearer ${login.body.token}`);
+
+    expect(response.status).toEqual(404);
+  });
+
+  it("should return 401, given invalid credentials", async () => {
+    const testId = 1;
+
+    const response = await supertest(app)
+      .put(`/tests/${testId}/update-views`)
+      .set("Authorization", `Bearer qualquer_token`);
+
+    expect(response.status).toEqual(401);
+  });
+});
+
+describe("Search bar - By Discipline", () => {
+  beforeEach(eraseUserTable());
+  afterAll(() => {
+    prismaDiconnect();
+  });
+
+  it("should return 200 and an empty array", async () => {
+    const disciplineName = "qualquer_um";
+
+    const login = await getToken();
+
+    const response = await supertest(app)
+      .get(`/tests?groupBy=disciplines&disciplineName=${disciplineName}`)
+      .set("Authorization", `Bearer ${login.body.token}`);
+
+    const searchedDiscipline = response.body;
+
+    expect(response.status).toEqual(200);
+    expect(searchedDiscipline.tests[0].disciplines).toHaveLength(0);
+  });
+});
+
 function prismaDiconnect(): jest.ProvidesHookCallback {
   return async () => {
     await prisma.$disconnect();
@@ -112,4 +175,11 @@ function eraseUserTable(): jest.ProvidesHookCallback {
   return async () => {
     await prisma.$executeRaw`TRUNCATE TABLE users;`;
   };
+}
+
+async function getToken() {
+  const body = userBodyFactory();
+  await userFactory(body);
+
+  return await supertest(app).post("/sign-in").send(body);
 }

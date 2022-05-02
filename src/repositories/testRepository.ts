@@ -70,8 +70,17 @@ async function incrementViews(testId: number) {
   });
 }
 
+async function findTestById(testId: number) {
+  return prisma.test.findUnique({
+    where: {
+      id: testId,
+    },
+  });
+}
+
 export default {
   getTestsByDiscipline,
   getTestsByTeachers,
   incrementViews,
+  findTestById
 };

@@ -10,10 +10,10 @@ const app = express();
 app.use(json());
 app.use(cors());
 app.use(router);
-app.use(errorHandlerMiddleware);
 
 if (process.env.NODE_ENV === "test") {
   app.use(testsRouter);
 }
 
+app.use(errorHandlerMiddleware);
 export default app;
