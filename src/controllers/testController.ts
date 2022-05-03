@@ -30,7 +30,7 @@ async function updateViews(req: Request, res: Response) {
 async function addNewTest(req: Request, res: Response) {
   const body: AddNewTestData = req.body;
 
-  testService.verifyDuplicatedTest(body.title);
+  await testService.verifyDuplicatedTest(body.title);
 
   const teacherDiscipline = await testService.verifyTeacherDiscipline(
     Number(body.teacher),

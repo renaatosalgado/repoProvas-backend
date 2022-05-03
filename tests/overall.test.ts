@@ -3,6 +3,7 @@ import app from "../src/app.js";
 import { prisma } from "../src/database.js";
 import userFactory from "./factories/userFactory.js";
 import userBodyFactory from "./factories/userBodyFactory.js";
+import { faker } from "@faker-js/faker";
 
 describe("Users tests - POST /sign-up", () => {
   beforeEach(eraseUserTable());
@@ -104,9 +105,8 @@ describe("Users tests - POST /sign-in", () => {
 
 describe("Update tests views - PUT /tests/:testId/update-views", () => {
   beforeEach(eraseUserTable());
-  afterAll(() => {
-    prismaDiconnect();
-  });
+
+  afterAll(prismaDiconnect());
 
   it("should return 201, given a valid testId", async () => {
     const testId = 1;
@@ -145,9 +145,8 @@ describe("Update tests views - PUT /tests/:testId/update-views", () => {
 
 describe("Search bar - By Discipline", () => {
   beforeEach(eraseUserTable());
-  afterAll(() => {
-    prismaDiconnect();
-  });
+
+  afterAll(prismaDiconnect());
 
   it("should return 200 and an empty array", async () => {
     const disciplineName = "qualquer_um";
@@ -163,6 +162,87 @@ describe("Search bar - By Discipline", () => {
     expect(response.status).toEqual(200);
     expect(searchedDiscipline.tests[0].disciplines).toHaveLength(0);
   });
+
+  it("should return 401, given invalid credentials", async () => {
+    const disciplineName = "qualquer_um";
+
+    const response = await supertest(app)
+      .get(`/tests?groupBy=disciplines&disciplineName=${disciplineName}`)
+      .set("Authorization", `Bearer qualquer_token`);
+
+    expect(response.status).toEqual(401);
+  });
+});
+
+describe("Adding new test", () => {
+  beforeEach(eraseUserTable());
+
+  afterAll(async () => {
+    eraseTestsTable();
+    prismaDiconnect();
+  });
+
+  it("should return 201, given a valid body", async () => {
+    const body = {
+      title: faker.lorem.word(),
+      pdfUrl: faker.internet.url(),
+      category: 1,
+      discipline: 1,
+      teacher: 1,
+    };
+
+    const login = await getToken();
+
+    const response = await supertest(app)
+      .post("/tests/add-new")
+      .send(body)
+      .set("Authorization", `Bearer ${login.body.token}`);
+
+    expect(response.status).toEqual(201);
+  });
+
+  it("should return 409, given a duplicated test title", async () => {
+    const body = {
+      title: "Prova Teste",
+      pdfUrl: "https://www.pudim.com.br",
+      category: 1,
+      discipline: 1,
+      teacher: 1,
+    };
+
+    const login = await getToken();
+
+    const response = await supertest(app)
+      .post("/tests/add-new")
+      .send(body)
+      .set("Authorization", `Bearer ${login.body.token}`);
+
+    expect(response.status).toEqual(409);
+  });
+
+  it("should return 422, given an invalid body", async () => {
+    const body = {};
+
+    const login = await getToken();
+
+    const response = await supertest(app)
+      .post("/tests/add-new")
+      .send(body)
+      .set("Authorization", `Bearer ${login.body.token}`);
+
+    expect(response.status).toEqual(422);
+  });
+
+  it("should return 401, given invalid credentials", async () => {
+    const body = {};
+
+    const response = await supertest(app)
+      .post("/tests/add-new")
+      .send(body)
+      .set("Authorization", `Bearer qualquer_token`);
+
+    expect(response.status).toEqual(401);
+  });
 });
 
 function prismaDiconnect(): jest.ProvidesHookCallback {
@@ -174,6 +254,13 @@ function prismaDiconnect(): jest.ProvidesHookCallback {
 function eraseUserTable(): jest.ProvidesHookCallback {
   return async () => {
     await prisma.$executeRaw`TRUNCATE TABLE users;`;
+  };
+}
+
+function eraseTestsTable(): jest.ProvidesHookCallback {
+  console.log("aqui");
+  return async () => {
+    await prisma.$executeRaw`TRUNCATE TABLE tests RESTART IDENTITY`;
   };
 }
 

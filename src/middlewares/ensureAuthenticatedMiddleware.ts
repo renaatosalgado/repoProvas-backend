@@ -9,7 +9,6 @@ export async function ensureAuthenticatedMiddleware(
   next: NextFunction
 ) {
   const authorization = req.headers["authorization"];
-  console.log(authorization)
   if (!authorization) throw unauthorizedError("Missing authorization header.");
 
   const token = authorization.replace("Bearer ", "");

@@ -27,7 +27,7 @@ async function find(
 }
 
 async function updateViews(testId: number) {
-  verifyTestExistence(testId);
+  await verifyTestExistence(testId);
 
   await testRepository.incrementViews(testId);
 }
