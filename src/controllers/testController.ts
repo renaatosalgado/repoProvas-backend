@@ -37,11 +37,6 @@ async function addNewTest(req: Request, res: Response) {
     Number(body.discipline)
   );
 
-  console.log(teacherDiscipline.id);
-  console.log(body.title);
-  console.log(Number(body.category));
-  console.log(body.pdfUrl);
-
   await testService.addNewTest(
     body.title,
     body.pdfUrl,
@@ -49,7 +44,6 @@ async function addNewTest(req: Request, res: Response) {
     teacherDiscipline.id
   );
 
-  console.log(body);
   res.sendStatus(201);
 }
 
