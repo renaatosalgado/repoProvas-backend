@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import testService from "../services/testService.js";
+import testService, { AddNewTestData } from "../services/testService.js";
 
 async function find(req: Request, res: Response) {
   const { groupBy, teacherName, disciplineName } = req.query as {
@@ -27,7 +27,34 @@ async function updateViews(req: Request, res: Response) {
   res.sendStatus(201);
 }
 
+async function addNewTest(req: Request, res: Response) {
+  const body: AddNewTestData = req.body;
+
+  testService.verifyDuplicatedTest(body.title);
+
+  const teacherDiscipline = await testService.verifyTeacherDiscipline(
+    Number(body.teacher),
+    Number(body.discipline)
+  );
+
+  console.log(teacherDiscipline.id);
+  console.log(body.title);
+  console.log(Number(body.category));
+  console.log(body.pdfUrl);
+
+  await testService.addNewTest(
+    body.title,
+    body.pdfUrl,
+    Number(body.category),
+    teacherDiscipline.id
+  );
+
+  console.log(body);
+  res.sendStatus(201);
+}
+
 export default {
   find,
   updateViews,
+  addNewTest,
 };

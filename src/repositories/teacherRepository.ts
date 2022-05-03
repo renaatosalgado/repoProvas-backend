@@ -18,6 +18,38 @@ async function getTeachersByDiscipline(disciplineId: number) {
   });
 }
 
+async function verifyTeacherDiscipline(
+  teacherId: number,
+  disciplineId: number
+) {
+  return await prisma.teacherDiscipline.findFirst({
+    where: {
+      teacherId: {
+        equals: teacherId,
+      },
+      AND: {
+        disciplineId: {
+          equals: disciplineId,
+        },
+      },
+    },
+  });
+}
+
+async function createTeacherDiscipline(
+  teacherId: number,
+  disciplineId: number
+) {
+  await prisma.teacherDiscipline.create({
+    data: {
+      teacherId: teacherId,
+      disciplineId: disciplineId,
+    },
+  });
+}
+
 export default {
   getTeachersByDiscipline,
+  verifyTeacherDiscipline,
+  createTeacherDiscipline,
 };

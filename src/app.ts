@@ -9,11 +9,10 @@ import testsRouter from "./routers/testsRouter.js";
 const app = express();
 app.use(json());
 app.use(cors());
+app.use(errorHandlerMiddleware);
 app.use(router);
-
 if (process.env.NODE_ENV === "test") {
   app.use(testsRouter);
 }
 
-app.use(errorHandlerMiddleware);
 export default app;

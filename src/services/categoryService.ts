@@ -1,7 +1,7 @@
 import categoryRepository from "../repositories/categoryRepository.js";
 
 async function findMany() {
-  return categoryRepository.findMany();
+  return await categoryRepository.findMany();
 }
 
 export default {

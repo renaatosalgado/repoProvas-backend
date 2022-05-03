@@ -78,9 +78,36 @@ async function findTestById(testId: number) {
   });
 }
 
+async function findTestByName(name: string) {
+  return prisma.test.findFirst({
+    where: {
+      name: name,
+    },
+  });
+}
+
+async function createNew(
+  name: string,
+  pdfUrl: string,
+  categoryId: number,
+  teacherDisciplineId: number
+) {
+  await prisma.test.create({
+    data: {
+      name,
+      pdfUrl,
+      categoryId,
+      teacherDisciplineId,
+      views: 0,
+    },
+  });
+}
+
 export default {
   getTestsByDiscipline,
   getTestsByTeachers,
   incrementViews,
-  findTestById
+  findTestById,
+  createNew,
+  findTestByName
 };

@@ -6,7 +6,7 @@ async function getTeacherByDiscipline(disciplineId: number) {
 
 export function filterNull(disciplineId: number | string) {
   if (disciplineId === "null") return 0;
-  else return disciplineId;
+  else return Number(disciplineId);
 }
 
 export default {
